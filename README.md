@@ -31,7 +31,7 @@ How you measure "error" and similar facets also matter. But you can't go wrong w
 Requirements
 ---
 
-- Look it over Cleveland and McGill's original experiment (see the section below) and [watch this video](https://github.com/cs4804-25c) to get a sense of the experiment structure and where your visualizations will go.
+- Look it over Cleveland and McGill's original experiment (see the section below) and [watch this video](https://www.loom.com/share/636660b72d00436a8ae910f91d67a0c7) to get a sense of the experiment structure and where your visualizations will go.
 - When viewing the example experiment video, note the following:
     - Trials are in random order.  
     - Each trial has a randomly generated set of 5-10 data points.  
