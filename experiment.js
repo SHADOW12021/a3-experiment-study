@@ -6,11 +6,11 @@ const concepts = [
 
 // BCP-37 Color Set (with saturation/lightness levels)
 const colors = [
-    "#FF0000", "#FF8000", "#FFFF00", "#A6FF00", "#00FF00", "#00FFFF", "#0080FF", "#8000FF", "#FF00FF", // Saturated
-    "#FF9999", "#FFC299", "#FFFF99", "#DFFF99", "#99FF99", "#99FFFF", "#99C2FF", "#C299FF", "#FF99FF", // Light
-    "#CC6666", "#CC9966", "#CCCC66", "#B8CC66", "#66CC66", "#66CCCC", "#6699CC", "#9966CC", "#CC66CC", // Muted
-    "#800000", "#804000", "#808000", "#608000", "#008000", "#008080", "#004080", "#400080", "#800080", // Dark
-    "#000000", "#333333", "#666666", "#999999", "#FFFFFF" // Achromatic colors (Black, Gray, White)
+    "#DC143C", "#FF4500", "#FFD700", "#ADFF2F", "#228B22", "#00CED1", "#0000CD", "#800080", // Saturated
+    "#FF9999", "#FFC299", "#FFFF99", "#DFFF99", "#99FF99", "#99FFFF", "#99C2FF", "#C299FF", // Light
+    "#CC6666", "#CC9966", "#CCCC66", "#99CC66", "#66CC66", "#66CCCC", "#6699CC", "#9966CC", // Muted
+    "#800000", "#804000", "#808000", "#608000", "#004D00", "#008080", "#004080", "#400080", // Dark
+    "#000000", "#333333", "#666666", "#999999", "#FFFFFF" // Achromatic colors (Black, Gray, White)
 ];
 
 let trialData = [];
@@ -29,6 +29,7 @@ function generateTrials() {
     shuffledTrials = shuffleArray(concepts.flatMap(concept => 
         shuffleArray(colors).map(color => ({ concept, color }))
     ));
+    console.log("Shuffled Trials:", shuffledTrials);
 }
 
 let currentTrialIndex = 0;
@@ -57,7 +58,7 @@ function submitRating() {
     const rating = document.getElementById("ratingSlider").value;
     const { concept, color } = shuffledTrials[currentTrialIndex];
     trialData.push({ concept, color, rating });
-    
+    console.log("Current trialData:", trialData);
     currentTrialIndex++;
     nextTrial();
 }
@@ -70,16 +71,20 @@ function endExperiment() {
 }
 
 function generateCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Concept,Color,Rating\n";
+    let csvContent = "Concept,Color,Rating\n";
     trialData.forEach(row => {
         csvContent += `${row.concept},${row.color},${row.rating}\n`;
     });
 
-    const encodedUri = encodeURI(csvContent);
+    console.log("CSV Content:", csvContent); 
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "experiment_results.csv");
+    link.href = URL.createObjectURL(blob);
+    link.download = "experiment_results.csv";
     link.textContent = "Download Results";
+
+    console.log("Download Link href:", link.href);
     document.getElementById("downloadLink").appendChild(link);
 }
 
@@ -87,3 +92,9 @@ function generateCSV() {
 document.getElementById("startButton").addEventListener("click", startExperiment);
 document.getElementById("nextButton").addEventListener("click", submitRating);
 document.getElementById("endButton").addEventListener("click", endExperiment);
+document.getElementById("ratingSlider").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        submitRating();
+    }
+});
