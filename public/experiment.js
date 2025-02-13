@@ -113,25 +113,17 @@ function endExperiment() {
   console.log("End Experiment button clicked"); // Debugging
   document.getElementById("experiment").style.display = "none";
   document.getElementById("results").style.display = "block";
-  generateCSV();
+  submitData();
 }
 
-function generateCSV() {
-  let csvContent = "Concept,Color,Rating\n";
-  trialData.forEach((row) => {
-    csvContent += `${row.concept},${row.color},${row.rating}\n`;
+async function submitData() {
+  await fetch("/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ data: trialData }),
   });
-
-  console.log("CSV Content:", csvContent);
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "experiment_results.csv";
-  link.textContent = "Download Results";
-
-  console.log("Download Link href:", link.href);
-  document.getElementById("downloadLink").appendChild(link);
 }
 
 // Attach Event Listeners

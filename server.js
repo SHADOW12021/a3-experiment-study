@@ -31,8 +31,10 @@ app.post("/submit", async (req, res) => {
 
     const result = await collection.insertOne(req.body);
     res.json({ message: "Success", data: result.ops });
+    console.log("Worked");
   } catch (error) {
     res.json({ message: "Error", error: error });
+    console.log("Failed");
   }
 });
 
