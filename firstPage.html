@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Experiment</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #results { display: none; } /* Hide instructions and results by default */
+        #experiment { display: none; } /* Hide experiment initially */
+        #colorBox { width: 100px; height: 100px; margin: 20px auto; border: 1px solid #000; }
+        #endButton { display: block; margin-top: 20px; } /* Ensure the button is visible */
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <h2>Instructions</h2>
+        <p>You'll be presented with colored squares and asked to rate how much you associate each with a concept.</p>
+        <button id="startButton">Start Experiment</button>
+    </div>
+
+    <div id="experiment">
+        <h2 id="concept"></h2>
+        <div id="colorBox"></div>
+        <input type="range" id="ratingSlider" min="0" max="100" step="1">
+        <button id="nextButton">Next</button>
+        <button id="endButton">End Experiment</button>
+    </div>
+
+    <div id="results">
+        <h2>Experiment Completed</h2>
+        <p>Thank you for participating!</p>
+        <div id="downloadLink"></div>
+    </div>
+</body>
+<script src="experiment.js"></script>
+</html>
