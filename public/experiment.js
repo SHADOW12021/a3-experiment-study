@@ -119,7 +119,7 @@ function submitRating() {
   experimentCount++;
   currentTrialIndex++;
   // Unlock a reward every 20 experiments
-  if (experimentCount % 20 === 0) {
+  if (experimentCount % 20 === 0 && experimentCount <= shuffledTrials.length) {
     unlockReward();
   }
   nextTrial();
@@ -162,6 +162,18 @@ function revealPokemon(card) {
   cardImage.style.height = `${pokemonSizes[card] / 2}px`;
   cardImage.style.width = "auto";
   cardImage.onclick = null;
+
+  if (card === "charizard") {
+    cardImage.classList.add("glow-effect");
+    const charizardSound = document.getElementById("charizardSound");
+    const charizardMessage = document.getElementById("charizardMessage");
+    charizardMessage.style.display = "block";
+    setTimeout(() => {
+      charizardMessage.style.display = "none"; // Hide the message after 3 seconds
+    }, 3000);
+    celebrateCharizard(); // Call the D3 animation function
+  }
+
   addCardToCollection(card);
 }
 
@@ -183,20 +195,151 @@ function addCardToCollection(card) {
   document.getElementById("collectedPokemon").style.display = "block";
 }
 
+// Create a fireball effect for Charizard
+function celebrateCharizard() {
+  // Play the sound effect
+  const charizardSound = document.getElementById("charizardSound");
+  charizardSound.play();
+
+  // Trigger confetti
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+  });
+
+  // Show the congratulatory message
+  const charizardMessage = document.getElementById("charizardMessage");
+  charizardMessage.style.display = "block";
+  setTimeout(() => {
+    charizardMessage.style.display = "none";
+  }, 3000);
+
+  // Fireball animation
+  const colorBox = d3.select("#colorBox");
+  const svg = colorBox.append("svg")
+    .attr("width", 200)
+    .attr("height", 200)
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("transform", "translate(-50%, -50%)");
+
+  const fireballs = [0, 1, 2, 3, 4];
+  fireballs.forEach((_, i) => {
+    svg.append("circle")
+      .attr("cx", 100)
+      .attr("cy", 100)
+      .attr("r", 10)
+      .attr("fill", i % 2 === 0 ? "orange" : "red")
+      .attr("opacity", 0.8)
+      .transition()
+      .delay(i * 200)
+      .duration(1000)
+      .ease(d3.easeElasticOut)
+      .attr("r", 60)
+      .style("opacity", 0)
+      .on("end", function () {
+        d3.select(this).remove();
+      });
+  });
+
+  svg.append("circle")
+    .attr("cx", 100)
+    .attr("cy", 100)
+    .attr("r", 0)
+    .attr("fill", "yellow")
+    .attr("opacity", 0.8)
+    .transition()
+    .delay(1000)
+    .duration(500)
+    .attr("r", 80)
+    .style("opacity", 0)
+    .on("end", function () {
+      svg.remove();
+    });
+}
+
 // Evolve the Cat (append new cat image without clearing previous ones)
 function evolveCat() {
   if (catStageIndex >= catStages.length) return;
+
+  // Create a new cat image
   const catContainer = document.getElementById("catEvolution");
-  // Create a new cat image and scale it down (50% of defined height)
+
+  // Make sure to create a new image for each evolution stage
   const catImage = document.createElement("img");
-  const scaledHeight = catStages[catStageIndex].height * 0.5;
+  const scaledHeight = catStages[catStageIndex].height * 0.5; // Scale the height for the image
   catImage.src = `pics/meow/${catStages[catStageIndex].file}.png`;
   catImage.style.height = `${scaledHeight}px`;
   catImage.style.width = "auto";
   catImage.style.marginRight = "5px";
+
+  // Append the image to the container
   catContainer.appendChild(catImage);
-  catContainer.style.display = "block";
+  catContainer.style.display = "block"; // Make sure the container is visible
+
+  // Play the meow sound
+  playMeow();
+
+  // Increment the cat stage index for the next evolution
   catStageIndex++;
+}
+
+// // Function to play meow sound with pitch shifting
+// function playMeow() {
+//   const catSound = document.getElementById("catSound");
+
+//   if (catSound) {
+//     // Create an audio context for manipulating sound
+//     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+//     // Create a source node from the audio element
+//     const source = audioContext.createMediaElementSource(catSound);
+//     // Create a gain node for the volume control
+//     const gainNode = audioContext.createGain();
+//     // Create a pitch shift node (we control pitch by changing playback rate)
+//     const pitchShifter = audioContext.createBufferSource();
+//     const pitchShift = Math.random() * 0.5 + 0.75; // Random pitch between 0.75x and 1.25x
+//     // Apply pitch shift by adjusting the playback rate
+//     pitchShifter.playbackRate.value = pitchShift;
+//     // Connect the source to the gain node, then to the audio context destination
+//     source.connect(gainNode);
+//     gainNode.connect(audioContext.destination);
+//     // Play the sound
+//     catSound.currentTime = 0;
+//     catSound.play();
+//     // Wait until sound starts, then apply the pitch shift effect
+//     pitchShifter.start();
+//   }
+// }
+
+function playMeow() {
+  const catSound = document.getElementById("catSound");
+  if (catSound) {
+    // Calculate the number of times to play the sound (current stage + 1)
+    const playCount = catStageIndex + 1;
+
+    // Function to play the sound once
+    const playOnce = () => {
+      catSound.currentTime = 0; // Reset the sound to the beginning
+      catSound.play()
+        .then(() => {
+          console.log("Cat sound played successfully.");
+        })
+        .catch(error => {
+          console.error("Error playing cat sound:", error);
+        });
+    };
+
+    // Play the sound multiple times with a delay between each play
+    for (let i = 0; i < playCount; i++) {
+      setTimeout(() => {
+        playOnce();
+      }, i * 1000); // Delay each play by 1 second (1000ms)
+    }
+  } else {
+    console.error("Cat sound element not found.");
+  }
 }
 
 // End Experiment: Hide experiment & reward containers, then show final slide
@@ -208,7 +351,7 @@ function endExperiment() {
   document.getElementById("blindBox").style.display = "none";
   document.getElementById("collectedPokemon").style.display = "none";
   document.getElementById("catEvolution").style.display = "none";
-  
+
   // Build final slide content based on selected reward
   const finalRewardDisplay = document.getElementById("finalRewardDisplay");
   finalRewardDisplay.innerHTML = ""; // Clear any previous content
