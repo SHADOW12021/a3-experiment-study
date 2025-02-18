@@ -8,6 +8,7 @@ const PORT = 3000;
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Connect to MongoDB
 const client = new MongoClient(process.env.MONGO_URI, {
   serverApi: {
@@ -37,6 +38,7 @@ app.post("/submit", async (req, res) => {
     res.json({ message: "Error", error: error });
   }
 });
+
 
 
 // Start server

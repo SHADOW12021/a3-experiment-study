@@ -11,8 +11,7 @@ const colors = [
   "#99C2FF", "#C299FF", "#CC6666", "#CC9966", "#CCCC66", "#99CC66", "#66CC66",
   "#66CCCC", "#6699CC", "#9966CC", "#800000", "#804000", "#808000", "#608000",
   "#004D00", "#008080", "#004080", "#400080", "#000000", "#333333", "#666666",
-  "#999999", "#FFFFFF"
-];
+  "#999999", "#FFFFFF"];
 
 let trialData = [];
 let shuffledTrials = [];
@@ -54,6 +53,7 @@ function shuffleArray(array) {
   return array;
 }
 
+
 // Generate Trials (random concept-color pairs)
 function generateTrials() {
   shuffledTrials = shuffleArray(
@@ -86,6 +86,7 @@ function nextTrial() {
     endExperiment();
     return;
   }
+
   const { concept, color } = shuffledTrials[currentTrialIndex];
   console.log("Showing trial:", concept, color);
   document.getElementById("concept").textContent = concept.toUpperCase();
@@ -394,3 +395,4 @@ document.getElementById("ratingSlider").addEventListener("keydown", function (ev
     submitRating();
   }
 });
+
