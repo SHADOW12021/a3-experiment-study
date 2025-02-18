@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
     * {
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
       text-align: center;
@@ -18,12 +20,35 @@
       flex-direction: column;
       align-items: center;
       padding: 10px;
+      transition: background-image 0.5s ease;
     }
+
+    .main-container {
+      width: 90%;
+      /* Adjust the width of the container */
+      max-width: 2000px;
+      /* Ensure it doesn't get too wide */
+      margin-top: 50px;
+      /* Add space from the top */
+      border-radius: 20px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      /* Align items at the top of the container */
+      align-items: center;
+      opacity: 0.95;
+    }
+
     h2 {
       color: #000000;
       font-size: 2em;
       margin-bottom: 10px;
     }
+
     .reward-container {
       display: flex;
       justify-content: center;
@@ -31,16 +56,19 @@
       gap: 50px;
       margin: 30px 0;
     }
+
     p {
       font-size: 1.1em;
       line-height: 1.6;
       color: #555;
       margin-bottom: 20px;
     }
+
     h3 {
       color: #2d72d9;
       margin-bottom: 10px;
     }
+
     .reward-option {
       display: flex;
       flex-direction: column;
@@ -53,6 +81,7 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 2px solid transparent;
     }
+
     .reward-option img {
       width: 160px;
       height: auto;
@@ -60,20 +89,24 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.3s ease-in-out;
     }
+
     .reward-option:hover {
       transform: scale(1.1);
     }
+
     .selected {
       transform: scale(1.2);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
       border: 3px solid #2d72d9;
     }
+
     .note {
       margin-top: 20px;
       font-size: 1.1em;
       font-weight: bold;
       margin-bottom: 25px;
     }
+
     /* Start Button */
     #startButton {
       display: inline-block;
@@ -89,18 +122,27 @@
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
+
     /* Activated Start Button */
     #startButton.active {
       background: linear-gradient(135deg, #2d72d9, #174ea6);
       cursor: pointer;
     }
+
     #startButton:hover.active {
       background: linear-gradient(135deg, #1c5bbd, #123b7d);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
+
     #experiment {
       display: none;
     }
+
+    /* The wrapper around the color box */
+.color-box-wrapper {
+  opacity: 1; /* Ensures that the #colorBox is fully opaque */
+}
+
     #colorBox {
       width: 200px;
       height: 200px;
@@ -108,41 +150,51 @@
       border-radius: 10px;
       border: 2px solid #000;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      opacity: 1;
     }
+
     #ratingSlider {
       width: 85%;
       margin: 20px auto;
     }
+
     /* Collected Pokémon styles */
     #collectedPokemon {
       margin-top: 20px;
       display: none;
     }
+
     #cardsContainer {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
     }
+
     #cardsContainer img {
       margin: 5px;
     }
+
     /* Final slide styling */
     #finalSlide {
       display: none;
       margin-top: 30px;
     }
+
     #finalSlide h2 {
       margin-bottom: 20px;
     }
+
     /* Cat evolution container styling */
     #catEvolution img {
       margin-right: 5px;
     }
+
     /* Make all images responsive */
     img {
       max-width: 100%;
       height: auto;
     }
+
     /* Tracker styles */
     #trialCounter {
       font-size: 1.2em;
@@ -152,83 +204,106 @@
     }
   </style>
 </head>
+
 <body>
-  <!-- Instructions & Reward Selection -->
-  <div id="instructions">
-    <h2><strong>Welcome to the Color Experiment</strong></h2>
-    <p>
-      Before you begin, please read this carefully.
-    </p>
+  <!-- Main Container for better focus -->
+  <div class="main-container">
+    <!-- Instructions & Reward Selection -->
+    <div id="instructions">
+      <h2><strong>Welcome to the Color Experiment</strong></h2>
+      <p>
+        Before you begin, please read this carefully.
+      </p>
 
-    <h3>🧐 About This Study</h3>
-    <p>
-      The goal of this study is to understand how people associate colors with concepts of everyday life and vice versa.
-    </p>
+      <h3>🧐 About This Study</h3>
+      <p>
+        The goal of this study is to understand how people associate colors with concepts of everyday life and vice
+        versa.
+      </p>
 
-    <h3>🛠 Procedure</h3>
-    <p>
-      You will be asked to **rate how much you associate a color with a given concept** using a continuous scale ranging from 0 to 100.
-    </p>
+      <h3>🛠 Procedure</h3>
+      <p>
+        You will be asked to **rate how much you associate a color with a given concept** using a continuous scale
+        ranging
+        from 0 to 100.
+      </p>
 
-    <h3>🎁 Reward</h3>
-    <p>
-      After completing the experiment, you will be able to select a reward. Choose the option you prefer!
-    </p>
+      <h3>🎁 Reward</h3>
+      <p>
+        After completing the experiment, you will be able to select a reward. Choose the option you prefer!
+      </p>
 
-    <h3><strong>Choose Your Reward Path</strong></h3>
-    <div class="reward-container">
-      <div id="unboxPokemon" class="reward-option">
-        <img src="pics/pokemon/card.png" alt="Pokémon Reward" />
+      <h3><strong>Choose Your Reward Path</strong></h3>
+      <div class="reward-container">
+        <div id="unboxPokemon" class="reward-option">
+          <img src="pics/pokemon/card.png" alt="Pokémon Reward" />
+        </div>
+        <div id="viewCat" class="reward-option">
+          <img src="pics/meow/meow1.png" alt="Cat Evolution Reward" />
+        </div>
       </div>
-      <div id="viewCat" class="reward-option">
-        <img src="pics/meow/meow1.png" alt="Cat Evolution Reward" />
-      </div>
+      <p class="note"><strong>Note:</strong> You must choose a reward before starting.</p>
+      <button id="startButton" disabled>Start Experiment</button>
     </div>
-    <p class="note"><strong>Note:</strong> You must choose a reward before starting.</p>
-    <button id="startButton" disabled>Start Experiment</button>
-  </div>
 
-  <!-- Experiment Section -->
-  <div id="experiment">
-    <h2 id="concept"></h2>
-    <div id="colorBox"></div>
-    <input type="range" id="ratingSlider" min="0" max="100" step="1" />
-    <button id="nextButton" class="btn">Next</button>
-    <button id="endButton" class="btn">End Experiment</button>
-    <div id="trialCounter">Trial: <span id="trialCountValue">0</span></div>
-  </div>
+    <!-- Experiment Section -->
+    <div id="experiment">
+      <h2 id="concept"></h2>
+      <div class="color-box-wrapper"> <!-- Added wrapper here -->
+        <div id="colorBox"></div>
+      </div>
+      <input type="range" id="ratingSlider" min="0" max="100" step="1" />
+      <button id="nextButton" class="btn">Next</button>
+      <button id="endButton" class="btn">End Experiment</button>
+      <div id="trialCounter">Trial: <span id="trialCountValue">0</span></div>
+    </div>
 
-  <!-- Reward Containers (hidden during experiment) -->
-  <div id="pokemon" style="display:none;">
-    <img id="cardImage" src="" alt="Hidden Pokémon Card" />
-  </div>
-  <div id="blindBox" style="display:none;"></div>
-  <div id="catEvolution" style="display:none;"></div>
+    <!-- Reward Containers (hidden during experiment) -->
+    <div id="pokemon" style="display:none;">
+      <img id="cardImage" src="" alt="Hidden Pokémon Card" />
+    </div>
+    <div id="blindBox" style="display:none;"></div>
+    <div id="catEvolution" style="display:none;"></div>
 
-  <!-- Collected Pokémon Placeholder (for Pokémon reward) -->
-  <div id="collectedPokemon">
-    <h3>Collected Pokémon</h3>
-    <div id="cardsContainer"></div>
+    <!-- Collected Pokémon Placeholder (for Pokémon reward) -->
+    <div id="collectedPokemon">
+      <h3>Collected Pokémon</h3>
+      <div id="cardsContainer"></div>
+    </div>
 
-  <script>
-    // Track the selected reward
-    const rewardOptions = document.querySelectorAll('.reward-option');
-    const startButton = document.getElementById('startButton');
+    <script>
+      // Track the selected reward
+      const rewardOptions = document.querySelectorAll('.reward-option');
+      const startButton = document.getElementById('startButton');
 
-    rewardOptions.forEach(option => {
-      option.addEventListener('click', function() {
-        // Deselect all other options
-        rewardOptions.forEach(opt => opt.classList.remove('selected'));
-        
-        // Select this option
-        this.classList.add('selected');
+      // Function to change the background image based on selection
+      function changeBackground(imageName) {
+        document.body.style.backgroundImage = `url('pics/${imageName}.png')`;  // Adjusted image paths
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center center';
+      }
 
-        // Enable the Start button and add 'active' class
-        startButton.disabled = false;
-        startButton.classList.add('active');
+      rewardOptions.forEach(option => {
+        option.addEventListener('click', function () {
+          // Deselect all other options
+          rewardOptions.forEach(opt => opt.classList.remove('selected'));
+
+          // Select this option
+          this.classList.add('selected');
+
+          // Change the background based on the selected option
+          if (this.id === 'unboxPokemon') {
+            changeBackground('pokemon/pokemon');
+          } else if (this.id === 'viewCat') {
+            changeBackground('meow/cat');
+          }
+
+          // Enable the Start button and add 'active' class
+          startButton.disabled = false;
+          startButton.classList.add('active');
+        });
       });
-    });
-  </script>
+    </script>
   </div>
 
   <!-- Final Slide -->
@@ -237,7 +312,9 @@
     <div id="finalRewardDisplay"></div>
   </div>
 
+
   <!-- External JavaScript File -->
   <script src="experiment.js"></script>
 </body>
+
 </html>
