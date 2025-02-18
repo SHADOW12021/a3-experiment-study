@@ -106,6 +106,7 @@ function submitRating() {
   trialData.push({ concept, color, rating });
   console.log("Current trialData:", trialData);
   currentTrialIndex++;
+  document.getElementById("ratingCounter").textContent = `Trial: ${currentTrialIndex}`;
   nextTrial();
 }
 
