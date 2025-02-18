@@ -25,6 +25,10 @@
         display: block;
         margin-top: 20px;
       } /* Ensure the button is visible */
+       #ratingCounter {
+        font-weight: bold;
+        float: right;
+      }
     </style>
   </head>
   <body>
@@ -42,6 +46,7 @@
       <div id="colorBox"></div>
       <input type="range" id="ratingSlider" min="0" max="100" step="1" />
       <button id="nextButton">Next</button>
+      <div id="ratingCounter">Trial: 0</div>
       <button id="endButton">End Experiment</button>
     </div>
 
