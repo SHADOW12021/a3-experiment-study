@@ -6,7 +6,8 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Connect to MongoDB
 const client = new MongoClient(process.env.MONGO_URI, {
@@ -26,17 +27,19 @@ app.use(express.static("public"));
 app.post("/submit", async (req, res) => {
   try {
     await client.connect();
-    const database = client.db("test");
-    const collection = database.collection("test");
+    const database = client.db("experimentDB");
+    const collection = database.collection("results");
 
     const result = await collection.insertOne(req.body);
-    res.json({ message: "Success", data: result.ops });
-    console.log("Worked");
+    res.json({ message: "Success", insertedId: result.insertedId });
+    console.log("Data saved:", req.body);
   } catch (error) {
+    console.error("Error saving data:", error);
     res.json({ message: "Error", error: error });
-    console.log("Failed");
   }
 });
+
+
 
 // Start server
 app.listen(PORT, () => {
