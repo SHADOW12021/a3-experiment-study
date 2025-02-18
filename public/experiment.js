@@ -32,7 +32,7 @@ const pokemonSizes = {
   "arcanine": 400, "bulbasaur": 250, "butterfree": 300, "ditto": 180,
   "dragonite": 500, "eevee": 230, "gengar": 320, "mew": 210,
   "mewtwo": 450, "pikachu": 230, "snorlax": 500, "squirtle": 250,
-  "charizard": 600, "psyduck": 280
+  "charizard": 700, "psyduck": 280
 };
 
 // Cat Evolution Stages

@@ -6,8 +6,6 @@
   <title>Color Experiment</title>
   <style>
     * {
-      margin: 15;
-      padding: 15;
       box-sizing: border-box;
     }
     body {
@@ -19,11 +17,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px;
+      padding: 10px;
     }
     h2 {
       color: #000000;
-      margin-bottom: 20px;
+      font-size: 2em;
+      margin-bottom: 10px;
     }
     .reward-container {
       display: flex;
@@ -52,6 +51,7 @@
       background: white;
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 2px solid transparent;
     }
     .reward-option img {
       width: 160px;
@@ -66,6 +66,7 @@
     .selected {
       transform: scale(1.2);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      border: 3px solid #2d72d9;
     }
     .note {
       margin-top: 20px;
@@ -73,6 +74,7 @@
       font-weight: bold;
       margin-bottom: 25px;
     }
+    /* Start Button */
     #startButton {
       display: inline-block;
       margin-top: 15px;
@@ -82,10 +84,19 @@
       border-radius: 10px;
       border: none;
       color: white;
-      background: linear-gradient(135deg, #2d72d9, #174ea6);
-      cursor: pointer;
+      background: #ccc;
+      cursor: not-allowed;
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    /* Activated Start Button */
+    #startButton.active {
+      background: linear-gradient(135deg, #2d72d9, #174ea6);
+      cursor: pointer;
+    }
+    #startButton:hover.active {
+      background: linear-gradient(135deg, #1c5bbd, #123b7d);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
     #experiment {
       display: none;
@@ -146,9 +157,24 @@
   <div id="instructions">
     <h2><strong>Welcome to the Color Experiment</strong></h2>
     <p>
-      You'll be presented with colored squares and asked to rate how much you associate each with a concept.
-      Every 20 trials, you will unlock a special reward!
+      Before you begin, please read this carefully.
     </p>
+
+    <h3>🧐 About This Study</h3>
+    <p>
+      The goal of this study is to understand how people associate colors with concepts of everyday life and vice versa.
+    </p>
+
+    <h3>🛠 Procedure</h3>
+    <p>
+      You will be asked to **rate how much you associate a color with a given concept** using a continuous scale ranging from 0 to 100.
+    </p>
+
+    <h3>🎁 Reward</h3>
+    <p>
+      After completing the experiment, you will be able to select a reward. Choose the option you prefer!
+    </p>
+
     <h3><strong>Choose Your Reward Path</strong></h3>
     <div class="reward-container">
       <div id="unboxPokemon" class="reward-option">
@@ -159,7 +185,7 @@
       </div>
     </div>
     <p class="note"><strong>Note:</strong> You must choose a reward before starting.</p>
-    <button id="startButton" class="btn" disabled>Start Experiment</button>
+    <button id="startButton" disabled>Start Experiment</button>
   </div>
 
   <!-- Experiment Section -->
@@ -183,6 +209,26 @@
   <div id="collectedPokemon">
     <h3>Collected Pokémon</h3>
     <div id="cardsContainer"></div>
+
+  <script>
+    // Track the selected reward
+    const rewardOptions = document.querySelectorAll('.reward-option');
+    const startButton = document.getElementById('startButton');
+
+    rewardOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        // Deselect all other options
+        rewardOptions.forEach(opt => opt.classList.remove('selected'));
+        
+        // Select this option
+        this.classList.add('selected');
+
+        // Enable the Start button and add 'active' class
+        startButton.disabled = false;
+        startButton.classList.add('active');
+      });
+    });
+  </script>
   </div>
 
   <!-- Final Slide -->
