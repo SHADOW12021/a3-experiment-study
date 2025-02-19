@@ -287,33 +287,6 @@ function evolveCat() {
   catStageIndex++;
 }
 
-// // Function to play meow sound with pitch shifting
-// function playMeow() {
-//   const catSound = document.getElementById("catSound");
-
-//   if (catSound) {
-//     // Create an audio context for manipulating sound
-//     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-//     // Create a source node from the audio element
-//     const source = audioContext.createMediaElementSource(catSound);
-//     // Create a gain node for the volume control
-//     const gainNode = audioContext.createGain();
-//     // Create a pitch shift node (we control pitch by changing playback rate)
-//     const pitchShifter = audioContext.createBufferSource();
-//     const pitchShift = Math.random() * 0.5 + 0.75; // Random pitch between 0.75x and 1.25x
-//     // Apply pitch shift by adjusting the playback rate
-//     pitchShifter.playbackRate.value = pitchShift;
-//     // Connect the source to the gain node, then to the audio context destination
-//     source.connect(gainNode);
-//     gainNode.connect(audioContext.destination);
-//     // Play the sound
-//     catSound.currentTime = 0;
-//     catSound.play();
-//     // Wait until sound starts, then apply the pitch shift effect
-//     pitchShifter.start();
-//   }
-// }
-
 function playMeow() {
   const catSound = document.getElementById("catSound");
   if (catSound) {
