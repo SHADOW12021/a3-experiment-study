@@ -207,7 +207,55 @@
     }
 
     .glow-effect {
-      animation: glow 1s infinite;
+            animation: glow 3s;
+    }
+    /* Next Button */
+    #nextButton {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 18px 36px;
+      /* Larger padding */
+      font-size: 20px;
+      /* Larger font size */
+      font-weight: bold;
+      border-radius: 12px;
+      /* Slightly larger border radius */
+      border: none;
+      color: white;
+      background: #4caf50;
+      /* Change to any color you prefer */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    #nextButton:hover {
+      background: #45a049;
+      /* Slightly darker color on hover */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    /* End Button */
+    #endButton {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 18px 36px;
+      /* Larger padding */
+      font-size: 20px;
+      /* Larger font size */
+      font-weight: bold;
+      border-radius: 12px;
+      /* Slightly larger border radius */
+      border: none;
+      color: white;
+      background: #f44336;
+      /* Change to any color you prefer */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    #endButton:hover {
+      background: #e53935;
+      /* Slightly darker color on hover */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
@@ -230,9 +278,8 @@
 
       <h3>🛠 Procedure</h3>
       <p>
-        You will be asked to **rate how much you associate a color with a given concept** using a continuous scale
-        ranging
-        from 0 to 100.
+        You will be asked to rate how much you associate a color with a given concept using a continuous scale
+        ranging from 0 to 100.
       </p>
 
       <h3>🎁 Reward</h3>
