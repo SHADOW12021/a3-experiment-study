@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Individual Concept Plots</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 30px;
+      background-color: #f5f7fa;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* Container for small multiple charts */
+    .chart-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .chart {
+      margin: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .axis path,
+    .axis line {
+      stroke: #000;
+    }
+    .chart-title {
+      text-anchor: middle;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .x-axis text {
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Color to Concept Semantics</h1>
+  <div id="plots" class="chart-container"></div>
+
+  <script>
+    // Mapping of hex codes to color names
+    const colorNames = {
+      "#DC143C": "Crimson",
+      "#FF4500": "Orange Red",
+      "#FFD700": "Gold",
+      "#ADFF2F": "Green Yellow",
+      "#228B22": "Forest Green",
+      "#00CED1": "Dark Turquoise",
+      "#0000CD": "Medium Blue",
+      "#800080": "Purple",
+      "#FF9999": "Light Pink",
+      "#FFC299": "Peach",
+      "#FFFF99": "Pale Yellow",
+      "#DFFF99": "Light Green Yellow",
+      "#99FF99": "Mint Green",
+      "#99FFFF": "Light Cyan",
+      "#99C2FF": "Light Blue",
+      "#C299FF": "Lavender Blue",
+      "#CC6666": "Dusky Red",
+      "#CC9966": "Tan",
+      "#CCCC66": "Khaki",
+      "#99CC66": "Light Olive Green",
+      "#66CC66": "Pastel Green",
+      "#66CCCC": "Aqua Green",
+      "#6699CC": "Steel Blue",
+      "#9966CC": "Amethyst",
+      "#800000": "Maroon",
+      "#804000": "Brown",
+      "#808000": "Olive",
+      "#608000": "Dark Olive",
+      "#004D00": "Dark Green",
+      "#008080": "Teal",
+      "#004080": "Navy Blue",
+      "#400080": "Deep Violet",
+      "#000000": "Black",
+      "#333333": "Dark Gray",
+      "#666666": "Gray",
+      "#999999": "Light Gray",
+      "#FFFFFF": "White"
+    };
+
+    // Load data from CSV file
+    //Format of CSV: concept,color,rating
+    d3.csv("data_cleaned.csv").then(data => {
+      // Group data by concept
+      const groupedData = d3.group(data, d => d.concept);
+
+      // Set dimensions for each individual plot
+      const plotWidth = 300;
+      const plotHeight = 200;
+      const margin = { top: 30, right: 20, bottom: 40, left: 40 };
+      const innerWidth = plotWidth - margin.left - margin.right;
+      const innerHeight = plotHeight - margin.top - margin.bottom;
+
+      // Container for all plots
+      const container = d3.select("#plots");
+
+      // For each concept, create an individual chart
+      groupedData.forEach((values, concept) => {
+        // Create a div for the chart
+        const chartDiv = container.append("div")
+          .attr("class", "chart");
+
+        // Append an SVG for this chart
+        const svg = chartDiv.append("svg")
+          .attr("width", plotWidth)
+          .attr("height", plotHeight)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // x-scale for the bars in this chart (one per record)
+        const xScale = d3.scaleBand()
+          .domain(d3.range(values.length))  // Use index for the xScale domain
+          .range([0, innerWidth])
+          .padding(0.1);
+
+        // y-scale for the ratings
+        const yMax = d3.max(values, d => +d.rating);
+        const yScale = d3.scaleLinear()
+          .domain([0, yMax])
+          .range([innerHeight, 0]);
+
+        // Draw bars: each bar’s color is taken from the data
+        svg.selectAll(".bar")
+          .data(values)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", (d, i) => xScale(i))  // Use index for positioning bars side by side
+          .attr("y", d => yScale(+d.rating))
+          .attr("width", xScale.bandwidth())
+          .attr("height", d => innerHeight - yScale(+d.rating))
+          .attr("fill", d => d.color);
+
+        // Add an x-axis with no labels or ticks
+        const xAxis = d3.axisBottom(xScale)
+          .tickFormat(() => "")  // Remove tick labels
+          .tickSize(0);  // Remove tick lines
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0, ${innerHeight})`)
+            .call(xAxis);
+
+        // Add a y-axis
+        const yAxis = d3.axisLeft(yScale).ticks(4);
+        svg.append("g")
+          .attr("class", "y-axis")
+          .call(yAxis);
+
+        // Add a title for the chart (the concept name)
+        svg.append("text")
+          .attr("class", "chart-title")
+          .attr("x", 0) // Align to the left of the plot
+          .attr("y", innerHeight + 30) // Position below the x-axis
+          .style("text-anchor", "start") // Align text to the start (left)
+          .text(concept.toUpperCase());
+  })
+});
+  </script>
+</body>
+</html>

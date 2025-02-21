@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mean vs. Standard Deviation (D3.js)</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            pointer-events: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .axis-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .grid line {
+            stroke: #ddd;
+            stroke-opacity: 0.7;
+            shape-rendering: crispEdges;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        .filter-container label {
+            margin-right: 10px;
+        }
+        .clear-filters {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        /* Style for color dropdown options */
+        .color-option {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="filter-container">
+        <label for="concept-filter">Filter by Concept:</label>
+        <select id="concept-filter">
+            <option value="all">All</option>
+        </select>
+
+        <label for="color-filter">Filter by Color:</label>
+        <select id="color-filter">
+            <option value="all">All</option>
+        </select>
+
+        <button class="clear-filters" onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <svg width="800" height="600"></svg>
+    <div class="tooltip"></div>
+
+    <script>
+        const predefinedColorOrder = [
+            "#DC143C", "#FF4500", "#FFD700", "#ADFF2F", "#228B22", "#00CED1",
+            "#0000CD", "#800080", "#FF9999", "#FFC299", "#FFFF99", "#DFFF99",
+            "#99FF99", "#99FFFF", "#99C2FF", "#C299FF", "#CC6666", "#CC9966",
+            "#CCCC66", "#99CC66", "#66CC66", "#66CCCC", "#6699CC", "#9966CC",
+            "#800000", "#804000", "#808000", "#608000", "#004D00", "#008080",
+            "#004080", "#400080", "#000000", "#333333", "#666666", "#999999", "#FFFFFF"
+        ];
+        const margin = { top: 50, right: 50, bottom: 50, left: 60 },
+              width = 800 - margin.left - margin.right,
+              height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select("svg")
+                      .append("g")
+                      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const tooltip = d3.select(".tooltip");
+
+        let data;
+        let xScale, yScale, sizeScale;
+
+        d3.csv("data.csv").then(csvData => {
+            data = csvData;
+            data.forEach(d => {
+                d.mean = +d.mean;
+                d.standard_deviation = +d.standard_deviation;
+                d.rating_count = +d.rating_count;
+            });
+
+            const uniqueColors = [...new Set(data.map(d => d.color))];
+            const sortedColors = uniqueColors.sort((a, b) => {
+                const indexA = predefinedColorOrder.indexOf(a);
+                const indexB = predefinedColorOrder.indexOf(b);
+                
+                if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            });
+
+            xScale = d3.scaleLinear()
+                       .domain([0, d3.max(data, d => d.mean) + 10])
+                       .range([0, width]);
+
+            yScale = d3.scaleLinear()
+                       .domain([0, d3.max(data, d => d.standard_deviation) + 10])
+                       .range([height, 0]);
+
+            sizeScale = d3.scaleSqrt()
+                          .domain([d3.min(data, d => d.rating_count), d3.max(data, d => d.rating_count)])
+                          .range([5, 20]);
+
+            svg.append("g")
+               .attr("class", "x-axis")
+               .attr("transform", `translate(0,${height})`)
+               .call(d3.axisBottom(xScale))
+               .append("text")
+               .attr("x", width / 2)
+               .attr("y", 40)
+               .attr("fill", "black")
+               .attr("class", "axis-label")
+               .text("Mean Rating");
+
+            svg.append("g")
+               .attr("class", "y-axis")
+               .call(d3.axisLeft(yScale))
+               .append("text")
+               .attr("transform", "rotate(-90)")
+               .attr("x", -height / 2)
+               .attr("y", -40)
+               .attr("fill", "black")
+               .attr("class", "axis-label")
+               .text("Standard Deviation");
+
+
+            svg.append("g")
+               .attr("class", "grid")
+               .call(d3.axisLeft(yScale).tickSize(-width).tickFormat(""));
+            svg.append("g")
+               .attr("class", "grid")
+               .attr("transform", `translate(0,${height})`)
+               .call(d3.axisBottom(xScale).tickSize(-height).tickFormat(""));
+
+            const concepts = [...new Set(data.map(d => d.concept))];
+            const colors = [...new Set(data.map(d => d.color))];
+
+            const conceptFilter = d3.select("#concept-filter");
+            const colorFilter = d3.select("#color-filter");
+
+            concepts.forEach(concept => {
+                conceptFilter.append("option")
+                             .attr("value", concept)
+                             .text(concept);
+            });
+
+            sortedColors.forEach(color => {
+                colorFilter.append("option")
+                    .attr("value", color)
+                    .style("background-color", color)
+                    .html(`<span class="color-option" style="background:${color}"></span>${color}`);
+            });
+
+            updateVisualization(data);
+
+            conceptFilter.on("change", () => applyFilters());
+            colorFilter.on("change", () => applyFilters());
+        }).catch(error => console.log(error));
+
+        //apply
+        function applyFilters() {
+            const selectedConcept = d3.select("#concept-filter").property("value");
+            const selectedColor = d3.select("#color-filter").property("value");
+
+            let filteredData = data;
+
+            if (selectedConcept !== "all") {
+                filteredData = filteredData.filter(d => d.concept === selectedConcept);
+            }
+
+            if (selectedColor !== "all") {
+                filteredData = filteredData.filter(d => d.color === selectedColor);
+            }
+
+            updateVisualization(filteredData);
+        }
+
+        //clear filters
+        function clearFilters() {
+            d3.select("#concept-filter").property("value", "all");
+            d3.select("#color-filter").property("value", "all");
+            applyFilters();
+        }
+
+
+        function updateVisualization(filteredData) {
+
+            const dots = svg.selectAll(".dot")
+                            .data(filteredData, d => d.concept + d.color);
+
+            dots.exit().remove(); //dont match filter
+
+            dots.enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.mean))
+                .attr("cy", d => yScale(d.standard_deviation))
+                .attr("r", d => sizeScale(d.rating_count))
+                .attr("fill", d => d.color)
+                .attr("opacity", 0.7)
+                .on("mouseover", (event, d) => {
+                    tooltip.style("display", "block")
+                           .style("left", event.pageX + "px")
+                           .style("top", event.pageY - 30 + "px")
+                           .html(`<strong>Concept:</strong> ${d.concept}<br>
+                                  <strong>Color:</strong> ${d.color}<br>
+                                  <strong>Mean:</strong> ${d.mean}<br>
+                                  <strong>Std Dev:</strong> ${d.standard_deviation}<br>
+                                  <strong>Count:</strong> ${d.rating_count}`);
+                })
+                .on("mouseout", () => tooltip.style("display", "none"));
+
+            dots.attr("cx", d => xScale(d.mean))
+                .attr("cy", d => yScale(d.standard_deviation))
+                .attr("r", d => sizeScale(d.rating_count))
+                .attr("fill", d => d.color);
+        }
+    </script>
+</body>
+</html>
